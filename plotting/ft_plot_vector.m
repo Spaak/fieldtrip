@@ -36,8 +36,7 @@ function [varargout] = ft_plot_vector(varargin)
 %   'vlim'            = vertical scaling limits within the local axes
 %
 % When using a local pseudo-axis, you can plot a label next to the data
-%   'label'           = string, label to be plotted in the corner of the box
-%   'labelpos'        = string, position for the label (default = 'upperleft')
+%   'label'           = string, label to be plotted at the upper left corner
 %   'fontcolor'       = string, color specification (default = 'k')
 %   'fontsize'        = number, sets the size of the text (default = 10)
 %   'fontunits'       =
@@ -119,7 +118,6 @@ hlim            = ft_getopt(varargin, 'hlim', 'maxmin');
 vlim            = ft_getopt(varargin, 'vlim', 'maxmin');
 style           = ft_getopt(varargin, 'style', '-');
 label           = ft_getopt(varargin, 'label');
-labelpos        = ft_getopt(varargin, 'labelpos', 'upperleft');
 axis            = ft_getopt(varargin, 'axis', false);
 box             = ft_getopt(varargin, 'box', false);
 color           = ft_getopt(varargin, 'color');
@@ -422,27 +420,21 @@ switch highlightstyle
     end
 end % switch highlightstyle
 
+
 if ~isempty(label)
-  switch labelpos
-    case 'upperleft'
-      h = text(hpos - width/2, vpos + height/2, label, 'color', fontcolor, 'fontunits', fontunits, 'fontsize', fontsize, 'fontname', fontname, 'fontweight', fontweight);
-    case 'upperright'
-      h = text(hpos + width/2, vpos + height/2, label, 'color', fontcolor, 'fontunits', fontunits, 'fontsize', fontsize, 'fontname', fontname, 'fontweight', fontweight);
-    case 'lowerleft'
-      h = text(hpos - width/2, vpos - height/2, label, 'color', fontcolor, 'fontunits', fontunits, 'fontsize', fontsize, 'fontname', fontname, 'fontweight', fontweight);
-    case 'lowerright'
-      h = text(hpos + width/2, vpos - height/2, label, 'color', fontcolor, 'fontunits', fontunits, 'fontsize', fontsize, 'fontname', fontname, 'fontweight', fontweight);
-    case 'center'
-      h = text(hpos, vpos, label, 'color', fontcolor, 'fontunits', fontunits, 'fontsize', fontsize, 'fontname', fontname, 'fontweight', fontweight);
-  end
+  boxposition(1) = hpos - width/2;
+  boxposition(2) = hpos + width/2;
+  boxposition(3) = vpos - height/2;
+  boxposition(4) = vpos + height/2;
+  h = text(boxposition(1), boxposition(4), label, 'color', fontcolor, 'fontunits', fontunits, 'fontsize', fontsize, 'fontname', fontname, 'fontweight', fontweight);
   if ~isempty(parent)
     set(h, 'Parent', parent);
   end
 end
 
 if box
-  % this plots a box around the original hpos/vpos with appropriate width/height
   boxposition = zeros(1,4);
+  % this plots a box around the original hpos/vpos with appropriate width/height
   boxposition(1) = hpos - width/2;
   boxposition(2) = hpos + width/2;
   boxposition(3) = vpos - height/2;

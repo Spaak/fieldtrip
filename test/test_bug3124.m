@@ -7,24 +7,25 @@ function test_bug3124
 
 %%
 
-load(dccnpath('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/headmodel.mat'))
-load(dccnpath('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/data_all.mat'))
+load(dccnpath('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/vol.mat'))
+load(dccnpath('/home/common/matlab/fieldtrip/data/ftp/tutorial/beamformer/dataFIC.mat'))
 
 %%
 
 cfg = [];
 cfg.method = 'mtmfft';
 cfg.taper = 'hanning';
-cfg.output = 'fourier';
-freq = ft_freqanalysis(cfg, data_all);
+cfg.output = 'powandcsd';
+freq = ft_freqanalysis(cfg, dataFIC);
 
 %%
 % with 1 cm grid -> 3000 grid points, 1484 inside
 % with 2 cm grid -> 186 grid points
 
 cfg = [];
-cfg.headmodel = ft_convert_units(headmodel, 'cm');
-cfg.resolution = 2;
+cfg.headmodel = vol;
+cfg.sourcemodel.resolution = 2;
+cfg.sourcemodel.unit = 'cm';
 cfg.channel = 'MEG';
 
 sourcemodel = ft_prepare_leadfield(cfg, freq);
@@ -44,18 +45,18 @@ freq2 = ft_selectdata(fcfg, freq);
 % the result should be at 10 Hz in all cases
 
 cfg = [];
-cfg.headmodel = headmodel;
+cfg.headmodel = vol;
 cfg.sourcemodel = sourcemodel;
 cfg.frequency = 10;
 source0 = ft_sourceanalysis(cfg, freq);
 
 cfg = [];
-cfg.headmodel = headmodel;
+cfg.headmodel = vol;
 cfg.sourcemodel = sourcemodel;
 source1 = ft_sourceanalysis(cfg, freq1);
 
 cfg = [];
-cfg.headmodel = headmodel;
+cfg.headmodel = vol;
 cfg.sourcemodel = sourcemodel;
 source2 = ft_sourceanalysis(cfg, freq2);
 
@@ -81,18 +82,18 @@ freq2 = ft_selectdata(fcfg, freq);
 % the result should be at 10 Hz in all cases, i.e. averaged from 9-11
 
 cfg = [];
-cfg.headmodel = headmodel;
+cfg.headmodel = vol;
 cfg.sourcemodel = sourcemodel;
 cfg.frequency = [9 11];
 source0 = ft_sourceanalysis(cfg, freq);
 
 cfg = [];
-cfg.headmodel = headmodel;
+cfg.headmodel = vol;
 cfg.sourcemodel = sourcemodel;
 source1 = ft_sourceanalysis(cfg, freq1);
 
 cfg = [];
-cfg.headmodel = headmodel;
+cfg.headmodel = vol;
 cfg.sourcemodel = sourcemodel;
 source2 = ft_sourceanalysis(cfg, freq2);
 
